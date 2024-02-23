@@ -1,31 +1,27 @@
-import { StyleSheet } from 'react-native';
+import { useMemo, useState } from 'react';
+import { View } from 'react-native';
+import { ExploreHeader } from '@/components/ExploreHeader';
+import { Listings } from '@/components/Listings';
+import { Stack } from 'expo-router';
+import listingsData from '@/assets/data/airbnb-listings.json';
+import { Listing } from '@/interfaces/Listing';
 
-import EditScreenInfo from '@/components/EditScreenInfo';
-import { Text, View } from '@/components/Themed';
+const Page = () => {
+  const [category, setCategory] = useState('Tiny homes');
+  const items: Listing[] = useMemo(() => listingsData as any[], []);
+  const onDataChanged = (category: string) => {
+    setCategory(category);
+  };
 
-export default function TabOneScreen() {
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Tab One</Text>
-      <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
-      <EditScreenInfo path="app/(tabs)/index.tsx" />
+    <View style={{ flex: 1, marginTop: 100 }}>
+      <Stack.Screen
+        options={{
+          header: () => <ExploreHeader onCategoryChange={onDataChanged} />,
+        }}
+      />
+      <Listings listings={items} category={category} />
     </View>
   );
-}
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: 'bold',
-  },
-  separator: {
-    marginVertical: 30,
-    height: 1,
-    width: '80%',
-  },
-});
+};
+export default Page;
